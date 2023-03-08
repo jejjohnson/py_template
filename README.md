@@ -9,11 +9,18 @@ This is my personal template for python packages
 ---
 ## Components
 
-**Config**: `ml_collections`
+**Versioning**: `versioneer`
 
-**Logger**: Weights and Biases
+**Documentation**: `jupyterbook`
 
-**ML Library**: Jax or PyTorch
+
+---
+## Installation
+
+```python
+python setup.py install
+```
+
 
 
 ---

@@ -58,11 +58,11 @@ test:  ## Test code using pytest.
 
 ##@ JupyterBook
 jb_build: ## Build Jupyterbook
-	rm -rf jb/_build/
-	jupyter-book build jb --all
+	rm -rf docs/_build/
+	jupyter-book build docs --all
 
 jb_clean: ## Clean JupyterBook
-	jupyter-book clean jb
+	jupyter-book clean docs
 
 run_versioneer: ## run the versioneer software
 	versioneer install --vendor
