@@ -20,8 +20,7 @@ repos:
         args: [--py37-plus]
       - id: nbqa-flake8
         args: ["--ignore=ES01,E203,E302,E402,E731,W503"]
-
-  - repo: https://github.com/PyCQA/autofkale
+  - repo: https://github.com/PyCQA/autoflake
     rev: v2.0.0
     hooks:
       - id: autoflake

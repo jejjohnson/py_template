@@ -1,72 +1,72 @@
-from setuptools import find_packages, setup
 import os
-import io
-import re
+import sys
+import itertools
+import codecs
+
+from setuptools import find_namespace_packages, setup
 
 
-def parse_requirements_file(filename):
-    with open(filename, encoding="utf-8") as fid:
-        requires = [line.strip() for line in fid.readlines() if line]
-    return requires
+try:
+    import versioneer
+except ImportError:
+    # we have a versioneer.py file living in the same directory as this file, but
+    # if we're using pep 517/518 to build from pyproject.toml its not going to find it
+    # https://github.com/python-versioneer/python-versioneer/issues/193#issue-408237852
+    # make this work by adding this directory to the python path
+    sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+    import versioneer
 
 
-# Optional Packages
-EXTRAS = {
-    "dev": [
-        "black",
-        "isort",
-        "pylint",
-        "flake8",
-    ],
-    "tests": [
-        "pytest",
-    ],
-    "docs": [
-        "furo",
-    ],
+def read_requirements(filename):
+    base = os.path.abspath(os.path.dirname(__file__))
+    with codecs.open(os.path.join(base, filename), "rb", "utf-8") as f:
+        lineiter = (line.strip() for line in f)
+        return [line for line in lineiter if line and not line.startswith("#")]
+
+
+requirements = {
+    "base": read_requirements("environments/requirements.txt"),
+    "dev": read_requirements("environments/requirements-dev.txt"),
+    "jlab": read_requirements("environments/requirements-jlab.txt"),
 }
 
-
-# Get version number (function from GPyTorch)
-def read(*names, **kwargs):
-    with io.open(
-        os.path.join(os.path.dirname(__file__), *names), encoding=kwargs.get("encoding", "utf8")
-    ) as fp:
-        return fp.read()
-
-
-def find_version(*file_paths):
-    version_file = read(*file_paths)
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
-
-
-version = find_version("ml_template", "__init__.py")
-readme = open("README.md").read()
+with open("README.md", encoding="utf8") as readme:
+    long_description = readme.read()
 
 
 setup(
-    name="ml_template",
-    version=version,
-    # author="M2Lines",
-    author_email="",
-    packages=find_packages(".", exclude=["tests"]),
+    name="py_template",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
+    packages=find_namespace_packages(include=["py_template"]),
+    author="J. Emmanuel Johnson",
+    author_email="jemanjohnson34@gmail.com",
     license="LICENSE",
     description="Lightweight ML Template",
-    long_description=readme,
+    long_description=long_description,
     long_description_content_type="text/markdown",
     # project_urls={
     #     "Documentation": "https://jaxsw.readthedocs.io/en/latest/",
     #     "Source": "https://github.com/jejjohnson/jaxsw",
     # },
-    install_requires=parse_requirements_file("environments/requirements.txt"),
-    extras_require=EXTRAS,
-    keywords=["ml template wandb"],
+    install_requires=requirements["base"],
+    python_requires=">=3.8",
+    extras_require={
+        **requirements,
+        "all": list(itertools.chain(*list(requirements.values()))),
+    },
+    include_package_data=True,
+    keywords=["python template"],
     classifiers=[
+        "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3 :: Only",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Software Development :: Libraries",
+        "Intended Audience :: Science/Research",
     ],
 )
