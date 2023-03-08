@@ -17,8 +17,23 @@ This is my personal template for python packages
 ---
 ## Installation
 
-```python
+
+**Option I**: Use the `setup.py` file
+
+```bash
 python setup.py install
+```
+
+**Option II**: Use the `pip` install option (locally)
+
+```bash
+pip install -e .
+```
+
+**Option III**:
+
+```bash
+pip install "git+https://github.com/jejjohnson/py_template.git"
 ```
 
 
